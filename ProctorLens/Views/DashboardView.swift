@@ -8,6 +8,8 @@ struct DashboardView: View {
     // In-memory flags passed from the session — always available instantly.
     let localFlags: [IntegrityFlag]
     let sessionID: String
+    var terminated: Bool = false
+    var terminationReason: String? = nil
 
     @State private var remoteFlags: [IntegrityFlag] = []
     @State private var isFetching = false
@@ -47,6 +49,11 @@ struct DashboardView: View {
                     flagList
                 }
             }
+            .safeAreaInset(edge: .top) {
+                if terminated {
+                    terminationBanner
+                }
+            }
             .navigationTitle("Session Review")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
@@ -63,6 +70,23 @@ struct DashboardView: View {
     }
 
     // MARK: - Sub-views
+
+    private var terminationBanner: some View {
+        VStack(spacing: 6) {
+            Label("EXAM TERMINATED", systemImage: "xmark.octagon.fill")
+                .font(.headline.bold())
+            if let reason = terminationReason {
+                Text(reason)
+                    .font(.caption)
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .foregroundStyle(.white)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+        .background(.red)
+    }
 
     private var emptyState: some View {
         VStack(spacing: 12) {

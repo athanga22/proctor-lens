@@ -36,12 +36,24 @@ struct ContentView: View {
                 quizShell
 
             case .dashboard:
-                DashboardView(localFlags: session.flags, sessionID: session.sessionID)
+                DashboardView(
+                    localFlags: session.flags,
+                    sessionID: session.sessionID,
+                    terminated: session.status == .terminated,
+                    terminationReason: session.terminationReason
+                )
             }
         }
         .animation(.easeInOut, value: screen)
         .onChange(of: scenePhase) { oldPhase, newPhase in
             handleScenePhaseChange(from: oldPhase, to: newPhase)
+        }
+        .onChange(of: session.status) { _, status in
+            // Auto-terminate: end the exam and jump to the review screen.
+            if status == .terminated {
+                camera.stop()
+                withAnimation { screen = .dashboard }
+            }
         }
     }
 
@@ -70,6 +82,27 @@ struct ContentView: View {
 
             sessionBanner
         }
+        .overlay(alignment: .top) {
+            if session.status == .warning {
+                warningBanner
+            }
+        }
+    }
+
+    /// Shown to the candidate once they cross the warning threshold — a real
+    /// system makes the consequence visible before auto-terminating.
+    private var warningBanner: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "exclamationmark.triangle.fill")
+            Text("Integrity warning — repeated violations will end your exam.")
+                .font(.callout.bold())
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .frame(maxWidth: .infinity)
+        .background(.red.opacity(0.9))
+        .transition(.move(edge: .top))
     }
 
     /// Bottom status bar — also shows DEMO tag in simulator mode.

@@ -21,6 +21,17 @@ enum FlagType: String, Codable, CaseIterable {
     static var cameraDetectable: [FlagType] {
         [.noFace, .multipleFaces, .headTurnedAway]
     }
+
+    /// How serious this violation is, used to compute a session severity score.
+    /// Leaving the exam app is the strongest signal; a brief head turn is mild.
+    var severity: Int {
+        switch self {
+        case .appBackgrounded: return 3
+        case .multipleFaces:   return 2
+        case .noFace:          return 2
+        case .headTurnedAway:  return 1
+        }
+    }
 }
 
 /// A single integrity event captured during a session.
