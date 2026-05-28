@@ -35,12 +35,16 @@ final class CameraMonitor: NSObject {
 
     // MARK: - Public API
 
-    /// Requests camera permission, configures the session, then starts capturing.
-    /// Falls back to simulator mode automatically if no camera is available.
-    /// Safe to call multiple times — no-ops if already running.
+    /// Starts camera monitoring.
+    /// - On a real device: requests permission and opens the front-camera session.
+    /// - In the simulator: skips AVFoundation entirely (the simulator's camera
+    ///   infrastructure is unreliable) and goes straight to synthetic tick mode.
     func start() {
         guard !isRunning else { return }
 
+        #if targetEnvironment(simulator)
+        startSimulatorFallback()
+        #else
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             configureAndStart()
@@ -53,10 +57,9 @@ final class CameraMonitor: NSObject {
                 }
             }
         default:
-            // Permission denied → treat like simulator: we can't see the user,
-            // so synthetic "no face" ticks are the honest fallback.
             startSimulatorFallback()
         }
+        #endif
     }
 
     func stop() {
@@ -91,17 +94,7 @@ final class CameraMonitor: NSObject {
 
         captureSession.sessionPreset = .medium   // Enough for face detection; saves power.
 
-        // On a real device: use the front camera.
-        // In the simulator: the Mac's FaceTime camera is mapped as the rear/unspecified
-        // camera — fall back to it so Vision runs on real frames instead of synthetic ones.
-        #if targetEnvironment(simulator)
-        let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
-                  ?? AVCaptureDevice.default(for: .video)
-        #else
-        let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-        #endif
-
-        guard let device else {
+        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
             throw CameraError.noFrontCamera
         }
         let input = try AVCaptureDeviceInput(device: device)

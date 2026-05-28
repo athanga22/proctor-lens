@@ -54,14 +54,13 @@ struct ContentView: View {
                 }
             }
 
-            // Simulator fallback: rotate through all three flag types so the
-            // full pipeline (analyzer → session → logger → dashboard) is testable
-            // without real camera hardware.
-            var simulatorFlagIndex = 0
-            let simulatorFlagTypes = FlagType.allCases
+            // Simulator fallback: realistic distribution — most ticks are clean,
+            // ~30% produce a random violation. Exercises the full pipeline without
+            // spamming every flag on every tick.
             camera.onSimulatorTick = { [session, logger] in
-                let type = simulatorFlagTypes[simulatorFlagIndex % simulatorFlagTypes.count]
-                simulatorFlagIndex += 1
+                guard Int.random(in: 0..<10) < 3,          // ~30% chance
+                      let type = FlagType.allCases.randomElement()
+                else { return }
                 let flag = IntegrityFlag(sessionID: session.sessionID, type: type)
                 session.recordFlag(flag)
                 logger.log(flag)
