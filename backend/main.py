@@ -2,22 +2,29 @@
 ProctorLens backend — minimal REST API for flag ingestion and retrieval.
 
 Endpoints:
-    POST /flags                   — log one integrity flag
+    POST /sessions                — create a session, returns {session_id, token}
+    POST /flags                   — log one integrity flag (requires bearer token)
     GET  /sessions/{id}/flags     — list all flags for a session
+
+Security: writes are the abuse vector here — without auth, anyone could forge
+or inject flags for any session. POST /flags therefore requires the per-session
+bearer token issued by POST /sessions. Reads are left open for the demo reviewer
+(in production they'd sit behind reviewer authentication).
 
 Storage: SQLite via aiosqlite (single file, no ORM needed at this scale).
 """
 
-import asyncio
+import secrets
 import sqlite3
+import uuid
 from contextlib import asynccontextmanager
-from datetime import datetime
 from pathlib import Path
 from typing import Literal
 
 import aiosqlite
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, Field
 
 # ---------------------------------------------------------------------------
@@ -36,6 +43,12 @@ FLAG_TYPES = Literal["no_face", "multiple_faces", "head_turned_away", "app_backg
 async def init_db() -> None:
     """Create tables if they don't exist yet."""
     async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS sessions (
+                session_id  TEXT PRIMARY KEY,
+                token       TEXT NOT NULL
+            )
+        """)
         await db.execute("""
             CREATE TABLE IF NOT EXISTS flags (
                 id          TEXT PRIMARY KEY,
@@ -76,6 +89,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Bearer token scheme. auto_error=False so we can return a clean 401 ourselves.
+bearer_scheme = HTTPBearer(auto_error=False)
+
 
 # ---------------------------------------------------------------------------
 # Schemas
@@ -95,13 +111,59 @@ class FlagOut(BaseModel):
     timestamp: str
 
 
+class SessionOut(BaseModel):
+    session_id: str
+    token: str
+
+
+# ---------------------------------------------------------------------------
+# Auth helper
+# ---------------------------------------------------------------------------
+
+async def verify_session_token(
+    session_id: str,
+    creds: HTTPAuthorizationCredentials | None,
+) -> None:
+    """Raise 401 unless the bearer token matches the one issued for this session."""
+    if creds is None:
+        raise HTTPException(status_code=401, detail="Missing bearer token")
+
+    async with aiosqlite.connect(DB_PATH) as db:
+        cursor = await db.execute(
+            "SELECT token FROM sessions WHERE session_id = ?", (session_id,)
+        )
+        row = await cursor.fetchone()
+
+    if row is None or not secrets.compare_digest(row[0], creds.credentials):
+        raise HTTPException(status_code=401, detail="Invalid session token")
+
+
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
 
+@app.post("/sessions", status_code=201, response_model=SessionOut)
+async def create_session() -> SessionOut:
+    """Create a new session and issue its write token."""
+    session_id = str(uuid.uuid4())
+    token = secrets.token_urlsafe(24)
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            "INSERT INTO sessions (session_id, token) VALUES (?, ?)",
+            (session_id, token),
+        )
+        await db.commit()
+    return SessionOut(session_id=session_id, token=token)
+
+
 @app.post("/flags", status_code=201, response_model=FlagOut)
-async def log_flag(flag: FlagIn) -> FlagOut:
-    """Persist one integrity flag from the iOS app."""
+async def log_flag(
+    flag: FlagIn,
+    creds: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+) -> FlagOut:
+    """Persist one integrity flag. Requires the session's bearer token."""
+    await verify_session_token(flag.session_id, creds)
+
     async with aiosqlite.connect(DB_PATH) as db:
         try:
             await db.execute(

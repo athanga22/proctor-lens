@@ -24,11 +24,7 @@ struct ContentView: View {
             switch screen {
             case .gate:
                 CameraGateView(state: camera.state) {
-                    // Camera is ready — wire pipeline then start session.
-                    wirePipeline()
-                    coalescer.reset()
-                    session.startSession()
-                    withAnimation { screen = .quiz }
+                    startMonitoredSession()
                 }
                 .onAppear { camera.requestAndStart() }
 
@@ -76,6 +72,7 @@ struct ContentView: View {
             WebView {
                 session.endSession()
                 camera.stop()
+                logger.reset()
                 withAnimation { screen = .dashboard }
             }
             .ignoresSafeArea()
@@ -134,6 +131,20 @@ struct ContentView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
         .background(.black.opacity(0.7))
+    }
+
+    // MARK: - Session start
+
+    /// Creates an authenticated backend session, then starts local monitoring.
+    /// Falls back to a local-only session if the backend is unreachable.
+    private func startMonitoredSession() {
+        Task {
+            let creds = await logger.createSession()
+            session.startSession(id: creds?.sessionID ?? UUID().uuidString)
+            coalescer.reset()
+            wirePipeline()
+            withAnimation { screen = .quiz }
+        }
     }
 
     // MARK: - Pipeline wiring

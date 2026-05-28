@@ -28,8 +28,10 @@ final class SessionManager: ObservableObject {
 
     // MARK: - Session control
 
-    func startSession() {
-        sessionID         = UUID().uuidString
+    /// Starts a session. Pass the backend-issued ID when available; falls back
+    /// to a local UUID so the app still works offline.
+    func startSession(id: String = UUID().uuidString) {
+        sessionID         = id
         flags             = []
         severityScore     = 0
         status            = .monitoring
