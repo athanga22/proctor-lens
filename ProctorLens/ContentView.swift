@@ -7,8 +7,9 @@ import SwiftUI
 /// or explicitly in simulator demo mode. Permission denied = hard block.
 struct ContentView: View {
 
-    @StateObject private var session = SessionManager()
-    @StateObject private var camera  = CameraMonitor()
+    @StateObject private var session   = SessionManager()
+    @StateObject private var camera    = CameraMonitor()
+    @StateObject private var snapshots = SnapshotStore()
 
     @Environment(\.scenePhase) private var scenePhase
 
@@ -35,6 +36,7 @@ struct ContentView: View {
                 DashboardView(
                     localFlags: session.flags,
                     sessionID: session.sessionID,
+                    snapshots: snapshots,
                     terminated: session.status == .terminated,
                     terminationReason: session.terminationReason
                 )
@@ -142,6 +144,7 @@ struct ContentView: View {
             let creds = await logger.createSession()
             session.startSession(id: creds?.sessionID ?? UUID().uuidString)
             coalescer.reset()
+            snapshots.reset()
             wirePipeline()
             withAnimation { screen = .quiz }
         }
@@ -152,13 +155,14 @@ struct ContentView: View {
     private func wirePipeline() {
         // Real camera frames → Vision (detected types) → coalesce → session + backend.
         // Coalescing means one flag per continuous violation, not one per frame.
-        camera.onFrame = { [session, analyzer, coalescer, logger] sampleBuffer in
+        camera.onFrame = { [session, analyzer, coalescer, logger, snapshots] sampleBuffer in
             guard let detected = analyzer.analyze(sampleBuffer: sampleBuffer) else {
                 return   // analysis failed this frame — leave state untouched
             }
             let started = coalescer.update(current: detected)
             for type in started {
                 let flag = IntegrityFlag(sessionID: session.sessionID, type: type)
+                snapshots.capture(from: sampleBuffer, for: flag.id)   // local-only evidence
                 session.recordFlag(flag)
                 logger.log(flag)
             }

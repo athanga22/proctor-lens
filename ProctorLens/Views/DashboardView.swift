@@ -8,6 +8,7 @@ struct DashboardView: View {
     // In-memory flags passed from the session — always available instantly.
     let localFlags: [IntegrityFlag]
     let sessionID: String
+    var snapshots: SnapshotStore? = nil
     var terminated: Bool = false
     var terminationReason: String? = nil
 
@@ -117,20 +118,51 @@ struct DashboardView: View {
             ForEach(grouped, id: \.0) { type, events in
                 Section("\(type.displayName)  (\(events.count))") {
                     ForEach(events) { flag in
-                        HStack {
-                            Text(Self.timeFormatter.string(from: flag.timestamp))
-                                .font(.caption.monospacedDigit())
-                                .foregroundStyle(.secondary)
-                            Spacer()
-                            Label(type.displayName, systemImage: iconName(for: type))
-                                .font(.callout)
-                                .foregroundStyle(color(for: type))
-                        }
+                        flagRow(flag: flag, type: type)
                     }
                 }
             }
         }
         .listStyle(.insetGrouped)
+    }
+
+    @ViewBuilder
+    private func flagRow(flag: IntegrityFlag, type: FlagType) -> some View {
+        HStack(spacing: 12) {
+            thumbnail(for: flag, type: type)
+
+            Text(Self.timeFormatter.string(from: flag.timestamp))
+                .font(.caption.monospacedDigit())
+                .foregroundStyle(.secondary)
+
+            Spacer()
+
+            Label(type.displayName, systemImage: iconName(for: type))
+                .font(.callout)
+                .foregroundStyle(color(for: type))
+        }
+    }
+
+    /// Shows the captured snapshot for camera-based flags; an icon placeholder
+    /// otherwise (e.g. app-backgrounded events have no frame, demo mode has none).
+    @ViewBuilder
+    private func thumbnail(for flag: IntegrityFlag, type: FlagType) -> some View {
+        if let image = snapshots?.image(for: flag.id) {
+            Image(uiImage: image)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 44, height: 44)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+        } else {
+            RoundedRectangle(cornerRadius: 6)
+                .fill(.quaternary)
+                .frame(width: 44, height: 44)
+                .overlay(
+                    Image(systemName: iconName(for: type))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                )
+        }
     }
 
     private func summaryRow(label: String, value: String) -> some View {

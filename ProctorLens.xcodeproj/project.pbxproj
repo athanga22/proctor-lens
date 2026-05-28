@@ -11,6 +11,7 @@
 		102DA1619612848B469BCB48 /* FlagCoalescer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B76551701EF08A9ADDB0761E /* FlagCoalescer.swift */; };
 		20FFE660AB63FEAD1E906E41 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85ABFC3004B06D7DC2B79348 /* SessionManager.swift */; };
 		2583111635975051BC8350AD /* ProctorLensApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664A2F4BF4A2D3AB47BAE01E /* ProctorLensApp.swift */; };
+		37C024D4B7CABCE71E5166C5 /* SnapshotStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05608EB5C5853C225537F20 /* SnapshotStore.swift */; };
 		5DA5F71D0D5035115B4DB856 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 886B13E3EECF6EA0ACB96440 /* WebView.swift */; };
 		6E9CA784D9162B5976BABAEB /* FlagLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925ABAFE2095B8EDE819EBFA /* FlagLogger.swift */; };
 		79F17FBA0A0E0214EE35022C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A46E9606169789F2FA4225 /* ContentView.swift */; };
@@ -37,6 +38,7 @@
 		9D17FECB44F4C47B51AEE4F3 /* Flag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flag.swift; sourceTree = "<group>"; };
 		AD72A3507E859DCCBA557CA4 /* CameraMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraMonitor.swift; sourceTree = "<group>"; };
 		B76551701EF08A9ADDB0761E /* FlagCoalescer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagCoalescer.swift; sourceTree = "<group>"; };
+		D05608EB5C5853C225537F20 /* SnapshotStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotStore.swift; sourceTree = "<group>"; };
 		E19FC7563CB24782CAA8C3D0 /* quiz.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = quiz.html; sourceTree = "<group>"; };
 		F7EB5907C555115059FEACE7 /* IntegrityAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegrityAnalyzer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -50,6 +52,7 @@
 				925ABAFE2095B8EDE819EBFA /* FlagLogger.swift */,
 				F7EB5907C555115059FEACE7 /* IntegrityAnalyzer.swift */,
 				85ABFC3004B06D7DC2B79348 /* SessionManager.swift */,
+				D05608EB5C5853C225537F20 /* SnapshotStore.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -190,6 +193,7 @@
 				BD1BB294799A5866ADD88B4E /* IntegrityAnalyzer.swift in Sources */,
 				2583111635975051BC8350AD /* ProctorLensApp.swift in Sources */,
 				20FFE660AB63FEAD1E906E41 /* SessionManager.swift in Sources */,
+				37C024D4B7CABCE71E5166C5 /* SnapshotStore.swift in Sources */,
 				5DA5F71D0D5035115B4DB856 /* WebView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
