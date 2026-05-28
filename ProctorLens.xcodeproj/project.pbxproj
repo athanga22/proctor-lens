@@ -1,0 +1,367 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		20FFE660AB63FEAD1E906E41 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85ABFC3004B06D7DC2B79348 /* SessionManager.swift */; };
+		2583111635975051BC8350AD /* ProctorLensApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664A2F4BF4A2D3AB47BAE01E /* ProctorLensApp.swift */; };
+		5DA5F71D0D5035115B4DB856 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 886B13E3EECF6EA0ACB96440 /* WebView.swift */; };
+		79F17FBA0A0E0214EE35022C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A46E9606169789F2FA4225 /* ContentView.swift */; };
+		92074BE53F3876975F2007B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 568DC8749A879BEE2F4FD582 /* Assets.xcassets */; };
+		BBA4FC381BE35D6209043872 /* Flag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D17FECB44F4C47B51AEE4F3 /* Flag.swift */; };
+		C86BE56D2AF7CAB78373B8BA /* quiz.html in Resources */ = {isa = PBXBuildFile; fileRef = E19FC7563CB24782CAA8C3D0 /* quiz.html */; };
+		E32F92A1A2BC6DAB56F416FF /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93939A1CAB6ACA391B340CDB /* DashboardView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0AC49CF41E49E7FBFCE83B45 /* ProctorLens.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ProctorLens.entitlements; sourceTree = "<group>"; };
+		1B8940446015E2DC80645F54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		4A6885D53B7592A8D5F63797 /* ProctorLens.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ProctorLens.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		568DC8749A879BEE2F4FD582 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		664A2F4BF4A2D3AB47BAE01E /* ProctorLensApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProctorLensApp.swift; sourceTree = "<group>"; };
+		85ABFC3004B06D7DC2B79348 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
+		886B13E3EECF6EA0ACB96440 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		93939A1CAB6ACA391B340CDB /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		94A46E9606169789F2FA4225 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		9D17FECB44F4C47B51AEE4F3 /* Flag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flag.swift; sourceTree = "<group>"; };
+		E19FC7563CB24782CAA8C3D0 /* quiz.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = quiz.html; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		01D207B9D8BFF4176BEBF9F0 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				85ABFC3004B06D7DC2B79348 /* SessionManager.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		3E211CE4E7017F98B5A1AFD9 /* ProctorLens */ = {
+			isa = PBXGroup;
+			children = (
+				568DC8749A879BEE2F4FD582 /* Assets.xcassets */,
+				94A46E9606169789F2FA4225 /* ContentView.swift */,
+				1B8940446015E2DC80645F54 /* Info.plist */,
+				0AC49CF41E49E7FBFCE83B45 /* ProctorLens.entitlements */,
+				664A2F4BF4A2D3AB47BAE01E /* ProctorLensApp.swift */,
+				58FDC4D5675290965694EBFD /* Models */,
+				6A1DB40F5F44C7DF4CC93FDC /* Resources */,
+				01D207B9D8BFF4176BEBF9F0 /* Services */,
+				6CB1CEFA5E68F1C50C176F8C /* Views */,
+			);
+			path = ProctorLens;
+			sourceTree = "<group>";
+		};
+		467F52AF3575B772F40C535E = {
+			isa = PBXGroup;
+			children = (
+				3E211CE4E7017F98B5A1AFD9 /* ProctorLens */,
+				956527DD707299FD332A0943 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		58FDC4D5675290965694EBFD /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				9D17FECB44F4C47B51AEE4F3 /* Flag.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		6A1DB40F5F44C7DF4CC93FDC /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E19FC7563CB24782CAA8C3D0 /* quiz.html */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		6CB1CEFA5E68F1C50C176F8C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				93939A1CAB6ACA391B340CDB /* DashboardView.swift */,
+				886B13E3EECF6EA0ACB96440 /* WebView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		956527DD707299FD332A0943 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4A6885D53B7592A8D5F63797 /* ProctorLens.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4A2112948866BF5EAF051A53 /* ProctorLens */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 464C802BE7D8602207FAA7BD /* Build configuration list for PBXNativeTarget "ProctorLens" */;
+			buildPhases = (
+				6899102A3DBC5B0965AC22F5 /* Sources */,
+				7EA3B64130DD3281C373785D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ProctorLens;
+			packageProductDependencies = (
+			);
+			productName = ProctorLens;
+			productReference = 4A6885D53B7592A8D5F63797 /* ProctorLens.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		ECC5FF44EE593A52EA35C7D0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = B91279276BEF4F993B4CF0DF /* Build configuration list for PBXProject "ProctorLens" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 467F52AF3575B772F40C535E;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 956527DD707299FD332A0943 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4A2112948866BF5EAF051A53 /* ProctorLens */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7EA3B64130DD3281C373785D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				92074BE53F3876975F2007B3 /* Assets.xcassets in Resources */,
+				C86BE56D2AF7CAB78373B8BA /* quiz.html in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6899102A3DBC5B0965AC22F5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79F17FBA0A0E0214EE35022C /* ContentView.swift in Sources */,
+				E32F92A1A2BC6DAB56F416FF /* DashboardView.swift in Sources */,
+				BBA4FC381BE35D6209043872 /* Flag.swift in Sources */,
+				2583111635975051BC8350AD /* ProctorLensApp.swift in Sources */,
+				20FFE660AB63FEAD1E906E41 /* SessionManager.swift in Sources */,
+				5DA5F71D0D5035115B4DB856 /* WebView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		745A93F4A2BE1D18B71CA75E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ProctorLens/ProctorLens.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = ProctorLens/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ashish.ProctorLens;
+				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Release;
+		};
+		AEC87D45CBBDB3319BA847C5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		D7AAFB5BB3A9E4152728BB60 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		FE62D3FC8D2F754B7FF10D98 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ProctorLens/ProctorLens.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = ProctorLens/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ashish.ProctorLens;
+				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		464C802BE7D8602207FAA7BD /* Build configuration list for PBXNativeTarget "ProctorLens" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FE62D3FC8D2F754B7FF10D98 /* Debug */,
+				745A93F4A2BE1D18B71CA75E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B91279276BEF4F993B4CF0DF /* Build configuration list for PBXProject "ProctorLens" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AEC87D45CBBDB3319BA847C5 /* Debug */,
+				D7AAFB5BB3A9E4152728BB60 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = ECC5FF44EE593A52EA35C7D0 /* Project object */;
+}

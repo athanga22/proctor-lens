@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>ProctorLens Demo Quiz</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      background: #f2f2f7;
+      color: #1c1c1e;
+      padding: 32px 24px 80px;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    header h1 { font-size: 28px; font-weight: 700; }
+    header p  { font-size: 14px; color: #6e6e73; margin-top: 6px; }
+
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .question-label {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-bottom: 6px;
+    }
+    .option:hover { background: #f2f2f7; }
+    .option input[type="radio"] { accent-color: #007aff; width: 18px; height: 18px; }
+    .option label { font-size: 15px; cursor: pointer; }
+
+    .submit-btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: #007aff;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 600;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    .submit-btn:hover  { background: #0062cc; }
+    .submit-btn:active { background: #004aad; }
+
+    #confirmation {
+      display: none;
+      text-align: center;
+      padding: 48px 24px;
+    }
+    #confirmation h2 { font-size: 24px; font-weight: 700; color: #34c759; }
+    #confirmation p  { margin-top: 8px; color: #6e6e73; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>ProctorLens Quiz</h1>
+    <p>Answer all questions, then tap Submit.</p>
+  </header>
+
+  <form id="quizForm">
+
+    <div class="card">
+      <p class="question-label">1. Which framework does ProctorLens use for on-device face detection?</p>
+      <div class="option"><input type="radio" name="q1" id="q1a" value="a"><label for="q1a">CoreML</label></div>
+      <div class="option"><input type="radio" name="q1" id="q1b" value="b"><label for="q1b">Vision</label></div>
+      <div class="option"><input type="radio" name="q1" id="q1c" value="c"><label for="q1c">CreateML</label></div>
+      <div class="option"><input type="radio" name="q1" id="q1d" value="d"><label for="q1d">ARKit</label></div>
+    </div>
+
+    <div class="card">
+      <p class="question-label">2. What does WKWebView stand for?</p>
+      <div class="option"><input type="radio" name="q2" id="q2a" value="a"><label for="q2a">WebKit Web View</label></div>
+      <div class="option"><input type="radio" name="q2" id="q2b" value="b"><label for="q2b">Wide-Key Web View</label></div>
+      <div class="option"><input type="radio" name="q2" id="q2c" value="c"><label for="q2c">Web Kernel View</label></div>
+      <div class="option"><input type="radio" name="q2" id="q2d" value="d"><label for="q2d">Workspace Kit Web View</label></div>
+    </div>
+
+    <div class="card">
+      <p class="question-label">3. Which head-pose angles does ProctorLens monitor?</p>
+      <div class="option"><input type="radio" name="q3" id="q3a" value="a"><label for="q3a">Roll and tilt only</label></div>
+      <div class="option"><input type="radio" name="q3" id="q3b" value="b"><label for="q3b">Yaw and pitch</label></div>
+      <div class="option"><input type="radio" name="q3" id="q3c" value="c"><label for="q3c">Eye-gaze vector</label></div>
+      <div class="option"><input type="radio" name="q3" id="q3d" value="d"><label for="q3d">Facial landmarks only</label></div>
+    </div>
+
+    <div class="card">
+      <p class="question-label">4. What leaves the device during a ProctorLens session?</p>
+      <div class="option"><input type="radio" name="q4" id="q4a" value="a"><label for="q4a">Raw camera frames</label></div>
+      <div class="option"><input type="radio" name="q4" id="q4b" value="b"><label for="q4b">Full session video</label></div>
+      <div class="option"><input type="radio" name="q4" id="q4c" value="c"><label for="q4c">Only flag metadata (type + timestamp)</label></div>
+      <div class="option"><input type="radio" name="q4" id="q4d" value="d"><label for="q4d">Audio recording</label></div>
+    </div>
+
+    <div class="card">
+      <p class="question-label">5. What backend does ProctorLens use?</p>
+      <div class="option"><input type="radio" name="q5" id="q5a" value="a"><label for="q5a">Django REST Framework</label></div>
+      <div class="option"><input type="radio" name="q5" id="q5b" value="b"><label for="q5b">FastAPI with SQLite</label></div>
+      <div class="option"><input type="radio" name="q5" id="q5c" value="c"><label for="q5c">Firebase Realtime DB</label></div>
+      <div class="option"><input type="radio" name="q5" id="q5d" value="d"><label for="q5d">GraphQL + Postgres</label></div>
+    </div>
+
+    <button type="submit" class="submit-btn">Submit Quiz</button>
+  </form>
+
+  <div id="confirmation">
+    <h2>Quiz Submitted</h2>
+    <p>Your session is ending. The reviewer dashboard will open shortly.</p>
+  </div>
+
+  <script>
+    document.getElementById('quizForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Hide form, show confirmation.
+      document.getElementById('quizForm').style.display = 'none';
+      document.getElementById('confirmation').style.display = 'block';
+
+      // Notify the native app via the JS bridge.
+      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.quizBridge) {
+        window.webkit.messageHandlers.quizBridge.postMessage('submitted');
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+# Xcode user data
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+xcuserdata/
+*.xcuserstate
+
+# Build output
+build/
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager (not used here, but guard anyway)
+.build/
+.swiftpm/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Instruments
+*.trace
+
+# Python / backend
+backend/__pycache__/
+backend/*.pyc
+backend/.venv/
+backend/proctor.db
