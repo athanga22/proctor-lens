@@ -31,3 +31,24 @@ targets:
       MARKETING_VERSION: "1.0"
     entitlements:
       path: ProctorLens/ProctorLens.entitlements
+
+  ProctorLensTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - ProctorLensTests
+    dependencies:
+      - target: ProctorLens
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.ashish.ProctorLensTests
+      GENERATE_INFOPLIST_FILE: "YES"
+
+schemes:
+  ProctorLens:
+    build:
+      targets:
+        ProctorLens: all
+    test:
+      targets:
+        - ProctorLensTests

@@ -13,7 +13,10 @@
 		2583111635975051BC8350AD /* ProctorLensApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664A2F4BF4A2D3AB47BAE01E /* ProctorLensApp.swift */; };
 		37C024D4B7CABCE71E5166C5 /* SnapshotStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05608EB5C5853C225537F20 /* SnapshotStore.swift */; };
 		5DA5F71D0D5035115B4DB856 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 886B13E3EECF6EA0ACB96440 /* WebView.swift */; };
+		646668388B92866CF07B7F24 /* SessionEscalationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231D1C2372C609233C2EC07C /* SessionEscalationTests.swift */; };
+		66BBDAFDEA98F388901510F6 /* FlagCoalescerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F186833A59AC92EF718C58EE /* FlagCoalescerTests.swift */; };
 		6E9CA784D9162B5976BABAEB /* FlagLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925ABAFE2095B8EDE819EBFA /* FlagLogger.swift */; };
+		703C5384D5A31C624070AF30 /* FlagTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81D77E2777FF6E3AB82462B /* FlagTypeTests.swift */; };
 		79F17FBA0A0E0214EE35022C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A46E9606169789F2FA4225 /* ContentView.swift */; };
 		92074BE53F3876975F2007B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 568DC8749A879BEE2F4FD582 /* Assets.xcassets */; };
 		9E69078EEE6434198A2C955A /* CameraGateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63252D894451D3A14AC907F5 /* CameraGateView.swift */; };
@@ -23,9 +26,20 @@
 		E32F92A1A2BC6DAB56F416FF /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93939A1CAB6ACA391B340CDB /* DashboardView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		190567841F34FBD234341E7B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ECC5FF44EE593A52EA35C7D0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4A2112948866BF5EAF051A53;
+			remoteInfo = ProctorLens;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		0AC49CF41E49E7FBFCE83B45 /* ProctorLens.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ProctorLens.entitlements; sourceTree = "<group>"; };
 		1B8940446015E2DC80645F54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		231D1C2372C609233C2EC07C /* SessionEscalationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionEscalationTests.swift; sourceTree = "<group>"; };
 		4A6885D53B7592A8D5F63797 /* ProctorLens.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ProctorLens.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		568DC8749A879BEE2F4FD582 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		63252D894451D3A14AC907F5 /* CameraGateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraGateView.swift; sourceTree = "<group>"; };
@@ -35,11 +49,14 @@
 		925ABAFE2095B8EDE819EBFA /* FlagLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagLogger.swift; sourceTree = "<group>"; };
 		93939A1CAB6ACA391B340CDB /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		94A46E9606169789F2FA4225 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		9673E7CF8056665C75AA41ED /* ProctorLensTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ProctorLensTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D17FECB44F4C47B51AEE4F3 /* Flag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flag.swift; sourceTree = "<group>"; };
+		A81D77E2777FF6E3AB82462B /* FlagTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagTypeTests.swift; sourceTree = "<group>"; };
 		AD72A3507E859DCCBA557CA4 /* CameraMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraMonitor.swift; sourceTree = "<group>"; };
 		B76551701EF08A9ADDB0761E /* FlagCoalescer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagCoalescer.swift; sourceTree = "<group>"; };
 		D05608EB5C5853C225537F20 /* SnapshotStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotStore.swift; sourceTree = "<group>"; };
 		E19FC7563CB24782CAA8C3D0 /* quiz.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = quiz.html; sourceTree = "<group>"; };
+		F186833A59AC92EF718C58EE /* FlagCoalescerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagCoalescerTests.swift; sourceTree = "<group>"; };
 		F7EB5907C555115059FEACE7 /* IntegrityAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegrityAnalyzer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -77,6 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				3E211CE4E7017F98B5A1AFD9 /* ProctorLens */,
+				E4F28C5FD8D0CEBC2786F3D6 /* ProctorLensTests */,
 				956527DD707299FD332A0943 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -111,8 +129,19 @@
 			isa = PBXGroup;
 			children = (
 				4A6885D53B7592A8D5F63797 /* ProctorLens.app */,
+				9673E7CF8056665C75AA41ED /* ProctorLensTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E4F28C5FD8D0CEBC2786F3D6 /* ProctorLensTests */ = {
+			isa = PBXGroup;
+			children = (
+				F186833A59AC92EF718C58EE /* FlagCoalescerTests.swift */,
+				A81D77E2777FF6E3AB82462B /* FlagTypeTests.swift */,
+				231D1C2372C609233C2EC07C /* SessionEscalationTests.swift */,
+			);
+			path = ProctorLensTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -135,6 +164,24 @@
 			productName = ProctorLens;
 			productReference = 4A6885D53B7592A8D5F63797 /* ProctorLens.app */;
 			productType = "com.apple.product-type.application";
+		};
+		BE8B93D3B7F5930D2AC4D11A /* ProctorLensTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DA2C0265E35718D61C16FF9C /* Build configuration list for PBXNativeTarget "ProctorLensTests" */;
+			buildPhases = (
+				5532A7B50FC2B295BA45D660 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3E5FC3EFC9481CBB24548CC1 /* PBXTargetDependency */,
+			);
+			name = ProctorLensTests;
+			packageProductDependencies = (
+			);
+			productName = ProctorLensTests;
+			productReference = 9673E7CF8056665C75AA41ED /* ProctorLensTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -162,6 +209,7 @@
 			projectRoot = "";
 			targets = (
 				4A2112948866BF5EAF051A53 /* ProctorLens */,
+				BE8B93D3B7F5930D2AC4D11A /* ProctorLensTests */,
 			);
 		};
 /* End PBXProject section */
@@ -179,6 +227,16 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		5532A7B50FC2B295BA45D660 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66BBDAFDEA98F388901510F6 /* FlagCoalescerTests.swift in Sources */,
+				703C5384D5A31C624070AF30 /* FlagTypeTests.swift in Sources */,
+				646668388B92866CF07B7F24 /* SessionEscalationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6899102A3DBC5B0965AC22F5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -200,7 +258,33 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		3E5FC3EFC9481CBB24548CC1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4A2112948866BF5EAF051A53 /* ProctorLens */;
+			targetProxy = 190567841F34FBD234341E7B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		49C444B6A5BBE3CF52B1AC02 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ashish.ProctorLensTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ProctorLens.app/ProctorLens";
+			};
+			name = Release;
+		};
 		745A93F4A2BE1D18B71CA75E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -221,6 +305,24 @@
 				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;
+		};
+		96E9E2E2EA931793D69A6DCB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ashish.ProctorLensTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ProctorLens.app/ProctorLens";
+			};
+			name = Debug;
 		};
 		AEC87D45CBBDB3319BA847C5 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -381,6 +483,15 @@
 			buildConfigurations = (
 				AEC87D45CBBDB3319BA847C5 /* Debug */,
 				D7AAFB5BB3A9E4152728BB60 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DA2C0265E35718D61C16FF9C /* Build configuration list for PBXNativeTarget "ProctorLensTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				96E9E2E2EA931793D69A6DCB /* Debug */,
+				49C444B6A5BBE3CF52B1AC02 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

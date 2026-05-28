@@ -56,13 +56,23 @@ final class SessionManager: ObservableObject {
     // MARK: - Escalation
 
     private func evaluateStatus() {
-        if severityScore >= terminationThreshold {
-            status = .terminated
+        status = Self.status(
+            forScore: severityScore,
+            warningThreshold: warningThreshold,
+            terminationThreshold: terminationThreshold
+        )
+        if status == .terminated {
             terminationReason = "Exam ended automatically: integrity violations "
                 + "exceeded the allowed limit (\(severityScore) points)."
             isActive = false
-        } else if severityScore >= warningThreshold {
-            status = .warning
         }
+    }
+
+    /// Pure escalation rule — extracted so it can be unit-tested without the
+    /// async/main-queue machinery of `recordFlag`.
+    static func status(forScore score: Int, warningThreshold: Int, terminationThreshold: Int) -> SessionStatus {
+        if score >= terminationThreshold { return .terminated }
+        if score >= warningThreshold     { return .warning }
+        return .monitoring
     }
 }
