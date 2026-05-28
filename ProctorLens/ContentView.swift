@@ -7,6 +7,9 @@ struct ContentView: View {
     @StateObject private var session = SessionManager()
     @State private var showDashboard = false
 
+    /// Camera monitor lives here so it shares the view's lifetime.
+    private let camera = CameraMonitor()
+
     var body: some View {
         ZStack(alignment: .topTrailing) {
 
@@ -34,7 +37,13 @@ struct ContentView: View {
 
             sessionBanner
         }
-        .onAppear { session.startSession() }
+        .onAppear {
+            session.startSession()
+            camera.start()
+        }
+        .onDisappear {
+            camera.stop()
+        }
     }
 
     /// Thin status bar at the bottom showing session state.

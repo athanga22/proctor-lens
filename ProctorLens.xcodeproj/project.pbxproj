@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0BD6DF576FFA68337F86E4A2 /* CameraMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD72A3507E859DCCBA557CA4 /* CameraMonitor.swift */; };
 		20FFE660AB63FEAD1E906E41 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85ABFC3004B06D7DC2B79348 /* SessionManager.swift */; };
 		2583111635975051BC8350AD /* ProctorLensApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664A2F4BF4A2D3AB47BAE01E /* ProctorLensApp.swift */; };
 		5DA5F71D0D5035115B4DB856 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 886B13E3EECF6EA0ACB96440 /* WebView.swift */; };
@@ -28,6 +29,7 @@
 		93939A1CAB6ACA391B340CDB /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		94A46E9606169789F2FA4225 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9D17FECB44F4C47B51AEE4F3 /* Flag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flag.swift; sourceTree = "<group>"; };
+		AD72A3507E859DCCBA557CA4 /* CameraMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraMonitor.swift; sourceTree = "<group>"; };
 		E19FC7563CB24782CAA8C3D0 /* quiz.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = quiz.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -35,6 +37,7 @@
 		01D207B9D8BFF4176BEBF9F0 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				AD72A3507E859DCCBA557CA4 /* CameraMonitor.swift */,
 				85ABFC3004B06D7DC2B79348 /* SessionManager.swift */,
 			);
 			path = Services;
@@ -165,6 +168,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0BD6DF576FFA68337F86E4A2 /* CameraMonitor.swift in Sources */,
 				79F17FBA0A0E0214EE35022C /* ContentView.swift in Sources */,
 				E32F92A1A2BC6DAB56F416FF /* DashboardView.swift in Sources */,
 				BBA4FC381BE35D6209043872 /* Flag.swift in Sources */,
