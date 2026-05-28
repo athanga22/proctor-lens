@@ -7,9 +7,10 @@ struct ContentView: View {
     @StateObject private var session = SessionManager()
     @State private var showDashboard = false
 
-    /// Camera monitor and analyzer live here so they share the view's lifetime.
+    /// Services — all share the view's lifetime.
     private let camera   = CameraMonitor()
     private let analyzer = IntegrityAnalyzer()
+    private let logger   = FlagLogger()
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
@@ -41,14 +42,15 @@ struct ContentView: View {
         .onAppear {
             session.startSession()
 
-            // Wire the frame pipeline: camera → analyzer → session
-            camera.onFrame = { [session, analyzer] sampleBuffer in
+            // Wire the frame pipeline: camera → analyzer → session + logger
+            camera.onFrame = { [session, analyzer, logger] sampleBuffer in
                 let flags = analyzer.analyze(
                     sampleBuffer: sampleBuffer,
                     sessionID: session.sessionID
                 )
                 for flag in flags {
                     session.recordFlag(flag)
+                    logger.log(flag)       // fire-and-forget POST to backend
                 }
             }
 

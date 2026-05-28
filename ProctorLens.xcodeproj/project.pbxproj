@@ -11,6 +11,7 @@
 		20FFE660AB63FEAD1E906E41 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85ABFC3004B06D7DC2B79348 /* SessionManager.swift */; };
 		2583111635975051BC8350AD /* ProctorLensApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664A2F4BF4A2D3AB47BAE01E /* ProctorLensApp.swift */; };
 		5DA5F71D0D5035115B4DB856 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 886B13E3EECF6EA0ACB96440 /* WebView.swift */; };
+		6E9CA784D9162B5976BABAEB /* FlagLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925ABAFE2095B8EDE819EBFA /* FlagLogger.swift */; };
 		79F17FBA0A0E0214EE35022C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A46E9606169789F2FA4225 /* ContentView.swift */; };
 		92074BE53F3876975F2007B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 568DC8749A879BEE2F4FD582 /* Assets.xcassets */; };
 		BBA4FC381BE35D6209043872 /* Flag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D17FECB44F4C47B51AEE4F3 /* Flag.swift */; };
@@ -27,6 +28,7 @@
 		664A2F4BF4A2D3AB47BAE01E /* ProctorLensApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProctorLensApp.swift; sourceTree = "<group>"; };
 		85ABFC3004B06D7DC2B79348 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
 		886B13E3EECF6EA0ACB96440 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		925ABAFE2095B8EDE819EBFA /* FlagLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagLogger.swift; sourceTree = "<group>"; };
 		93939A1CAB6ACA391B340CDB /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		94A46E9606169789F2FA4225 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9D17FECB44F4C47B51AEE4F3 /* Flag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flag.swift; sourceTree = "<group>"; };
@@ -40,6 +42,7 @@
 			isa = PBXGroup;
 			children = (
 				AD72A3507E859DCCBA557CA4 /* CameraMonitor.swift */,
+				925ABAFE2095B8EDE819EBFA /* FlagLogger.swift */,
 				F7EB5907C555115059FEACE7 /* IntegrityAnalyzer.swift */,
 				85ABFC3004B06D7DC2B79348 /* SessionManager.swift */,
 			);
@@ -175,6 +178,7 @@
 				79F17FBA0A0E0214EE35022C /* ContentView.swift in Sources */,
 				E32F92A1A2BC6DAB56F416FF /* DashboardView.swift in Sources */,
 				BBA4FC381BE35D6209043872 /* Flag.swift in Sources */,
+				6E9CA784D9162B5976BABAEB /* FlagLogger.swift in Sources */,
 				BD1BB294799A5866ADD88B4E /* IntegrityAnalyzer.swift in Sources */,
 				2583111635975051BC8350AD /* ProctorLensApp.swift in Sources */,
 				20FFE660AB63FEAD1E906E41 /* SessionManager.swift in Sources */,
