@@ -10,8 +10,9 @@ struct ContentView: View {
     @StateObject private var session = SessionManager()
     @StateObject private var camera  = CameraMonitor()
 
-    private let analyzer = IntegrityAnalyzer()
-    private let logger   = FlagLogger()
+    private let analyzer  = IntegrityAnalyzer()
+    private let coalescer = FlagCoalescer()
+    private let logger    = FlagLogger()
 
     enum Screen { case gate, quiz, dashboard }
     @State private var screen: Screen = .gate
@@ -23,6 +24,7 @@ struct ContentView: View {
                 CameraGateView(state: camera.state) {
                     // Camera is ready — wire pipeline then start session.
                     wirePipeline()
+                    coalescer.reset()
                     session.startSession()
                     withAnimation { screen = .quiz }
                 }
@@ -87,16 +89,21 @@ struct ContentView: View {
     // MARK: - Pipeline wiring
 
     private func wirePipeline() {
-        // Real camera frames → Vision → session + backend
-        camera.onFrame = { [session, analyzer, logger] sampleBuffer in
-            let flags = analyzer.analyze(sampleBuffer: sampleBuffer, sessionID: session.sessionID)
-            for flag in flags {
+        // Real camera frames → Vision (detected types) → coalesce → session + backend.
+        // Coalescing means one flag per continuous violation, not one per frame.
+        camera.onFrame = { [session, analyzer, coalescer, logger] sampleBuffer in
+            guard let detected = analyzer.analyze(sampleBuffer: sampleBuffer) else {
+                return   // analysis failed this frame — leave state untouched
+            }
+            let started = coalescer.update(current: detected)
+            for type in started {
+                let flag = IntegrityFlag(sessionID: session.sessionID, type: type)
                 session.recordFlag(flag)
                 logger.log(flag)
             }
         }
 
-        // Simulator demo: realistic sparse synthetic flags
+        // Simulator demo: realistic sparse synthetic flags (discrete, no coalescing).
         camera.onSimulatorTick = { [session, logger] in
             guard Int.random(in: 0..<10) < 3,
                   let type = FlagType.allCases.randomElement()
