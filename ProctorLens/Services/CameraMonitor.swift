@@ -91,8 +91,17 @@ final class CameraMonitor: NSObject {
 
         captureSession.sessionPreset = .medium   // Enough for face detection; saves power.
 
-        // Front camera input
-        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
+        // On a real device: use the front camera.
+        // In the simulator: the Mac's FaceTime camera is mapped as the rear/unspecified
+        // camera — fall back to it so Vision runs on real frames instead of synthetic ones.
+        #if targetEnvironment(simulator)
+        let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+                  ?? AVCaptureDevice.default(for: .video)
+        #else
+        let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+        #endif
+
+        guard let device else {
             throw CameraError.noFrontCamera
         }
         let input = try AVCaptureDeviceInput(device: device)
