@@ -53,12 +53,13 @@ final class CameraMonitor: NSObject, ObservableObject {
 
     /// Checks / requests permission, then starts the appropriate path.
     /// Safe to call multiple times — no-ops once past the `.unknown` state.
+    ///
+    /// In the simulator we still go through the normal AVFoundation path so
+    /// that tools like RocketSim — which inject a virtual camera device — work
+    /// transparently. Demo mode is only the last resort if no device is found.
     func requestAndStart() {
         guard state == .unknown else { return }
 
-        #if targetEnvironment(simulator)
-        startSimulatorDemo()
-        #else
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             configureAndStart()
@@ -74,10 +75,8 @@ final class CameraMonitor: NSObject, ObservableObject {
                 }
             }
         default:
-            // .denied or .restricted
             DispatchQueue.main.async { self.state = .permissionDenied }
         }
-        #endif
     }
 
     func stop() {
@@ -98,11 +97,15 @@ final class CameraMonitor: NSObject, ObservableObject {
                 self.captureSession.startRunning()
                 DispatchQueue.main.async { self.state = .active }
             } catch {
-                // Hardware unavailable even though permission was granted.
-                // This should not happen on a real device — treat as denied
-                // so the quiz is blocked rather than proceeding unmonitored.
                 print("[CameraMonitor] Setup error: \(error)")
+                #if targetEnvironment(simulator)
+                // Simulator with no RocketSim camera — synthetic demo is honest here.
+                DispatchQueue.main.async { self.startSimulatorDemo() }
+                #else
+                // Real device with no camera after permission granted = unexpected.
+                // Block rather than proceed unmonitored.
                 DispatchQueue.main.async { self.state = .permissionDenied }
+                #endif
             }
         }
     }
@@ -113,7 +116,17 @@ final class CameraMonitor: NSObject, ObservableObject {
 
         captureSession.sessionPreset = .medium
 
-        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
+        // On a real device: always use the front camera.
+        // In the simulator: RocketSim injects a virtual device that doesn't report
+        // as .front — fall back to whatever camera the system exposes.
+        #if targetEnvironment(simulator)
+        let device = AVCaptureDevice.default(for: .video)
+        #else
+        let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+        #endif
+
+        guard let device else {
+            // No camera found at all — drop to demo mode, don't block.
             throw CameraError.noFrontCamera
         }
         let input = try AVCaptureDeviceInput(device: device)
