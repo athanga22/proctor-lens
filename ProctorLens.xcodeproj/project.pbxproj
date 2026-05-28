@@ -14,6 +14,7 @@
 		6E9CA784D9162B5976BABAEB /* FlagLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925ABAFE2095B8EDE819EBFA /* FlagLogger.swift */; };
 		79F17FBA0A0E0214EE35022C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A46E9606169789F2FA4225 /* ContentView.swift */; };
 		92074BE53F3876975F2007B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 568DC8749A879BEE2F4FD582 /* Assets.xcassets */; };
+		9E69078EEE6434198A2C955A /* CameraGateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63252D894451D3A14AC907F5 /* CameraGateView.swift */; };
 		BBA4FC381BE35D6209043872 /* Flag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D17FECB44F4C47B51AEE4F3 /* Flag.swift */; };
 		BD1BB294799A5866ADD88B4E /* IntegrityAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EB5907C555115059FEACE7 /* IntegrityAnalyzer.swift */; };
 		C86BE56D2AF7CAB78373B8BA /* quiz.html in Resources */ = {isa = PBXBuildFile; fileRef = E19FC7563CB24782CAA8C3D0 /* quiz.html */; };
@@ -25,6 +26,7 @@
 		1B8940446015E2DC80645F54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		4A6885D53B7592A8D5F63797 /* ProctorLens.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ProctorLens.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		568DC8749A879BEE2F4FD582 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		63252D894451D3A14AC907F5 /* CameraGateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraGateView.swift; sourceTree = "<group>"; };
 		664A2F4BF4A2D3AB47BAE01E /* ProctorLensApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProctorLensApp.swift; sourceTree = "<group>"; };
 		85ABFC3004B06D7DC2B79348 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
 		886B13E3EECF6EA0ACB96440 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 		6CB1CEFA5E68F1C50C176F8C /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				63252D894451D3A14AC907F5 /* CameraGateView.swift */,
 				93939A1CAB6ACA391B340CDB /* DashboardView.swift */,
 				886B13E3EECF6EA0ACB96440 /* WebView.swift */,
 			);
@@ -174,6 +177,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E69078EEE6434198A2C955A /* CameraGateView.swift in Sources */,
 				0BD6DF576FFA68337F86E4A2 /* CameraMonitor.swift in Sources */,
 				79F17FBA0A0E0214EE35022C /* ContentView.swift in Sources */,
 				E32F92A1A2BC6DAB56F416FF /* DashboardView.swift in Sources */,

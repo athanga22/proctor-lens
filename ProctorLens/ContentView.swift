@@ -1,29 +1,41 @@
 import SwiftUI
 
-/// Root view — shows the quiz shell while a session is active,
-/// and the reviewer dashboard after it ends.
+/// App flow:
+///   Gate (camera check) → Quiz (monitored) → Dashboard (review)
+///
+/// The quiz never loads unless the camera is either active (real device)
+/// or explicitly in simulator demo mode. Permission denied = hard block.
 struct ContentView: View {
 
     @StateObject private var session = SessionManager()
-    @State private var showDashboard = false
+    @StateObject private var camera  = CameraMonitor()
 
-    /// Services — all share the view's lifetime.
-    private let camera   = CameraMonitor()
     private let analyzer = IntegrityAnalyzer()
     private let logger   = FlagLogger()
 
-    var body: some View {
-        ZStack(alignment: .topTrailing) {
+    enum Screen { case gate, quiz, dashboard }
+    @State private var screen: Screen = .gate
 
-            if showDashboard {
-                DashboardView(localFlags: session.flags, sessionID: session.sessionID)
-                    .transition(.move(edge: .trailing))
-            } else {
+    var body: some View {
+        Group {
+            switch screen {
+            case .gate:
+                CameraGateView(state: camera.state) {
+                    // Camera is ready — wire pipeline then start session.
+                    wirePipeline()
+                    session.startSession()
+                    withAnimation { screen = .quiz }
+                }
+                .onAppear { camera.requestAndStart() }
+
+            case .quiz:
                 quizShell
-                    .transition(.move(edge: .leading))
+
+            case .dashboard:
+                DashboardView(localFlags: session.flags, sessionID: session.sessionID)
             }
         }
-        .animation(.easeInOut, value: showDashboard)
+        .animation(.easeInOut, value: screen)
     }
 
     // MARK: - Quiz shell
@@ -31,53 +43,19 @@ struct ContentView: View {
     private var quizShell: some View {
         ZStack(alignment: .bottom) {
             WebView {
-                // Quiz submitted → end session and show dashboard.
                 session.endSession()
-                withAnimation { showDashboard = true }
+                camera.stop()
+                withAnimation { screen = .dashboard }
             }
             .ignoresSafeArea()
 
             sessionBanner
         }
-        .onAppear {
-            session.startSession()
-
-            // Wire the frame pipeline: camera → analyzer → session + logger
-            camera.onFrame = { [session, analyzer, logger] sampleBuffer in
-                let flags = analyzer.analyze(
-                    sampleBuffer: sampleBuffer,
-                    sessionID: session.sessionID
-                )
-                for flag in flags {
-                    session.recordFlag(flag)
-                    logger.log(flag)       // fire-and-forget POST to backend
-                }
-            }
-
-            // Simulator fallback: realistic distribution — most ticks are clean,
-            // ~30% produce a random violation. Exercises the full pipeline without
-            // spamming every flag on every tick.
-            camera.onSimulatorTick = { [session, logger] in
-                guard Int.random(in: 0..<10) < 3,          // ~30% chance
-                      let type = FlagType.allCases.randomElement()
-                else { return }
-                let flag = IntegrityFlag(sessionID: session.sessionID, type: type)
-                session.recordFlag(flag)
-                logger.log(flag)
-            }
-
-            camera.start()
-        }
-        .onDisappear {
-            camera.stop()
-            camera.onFrame = nil
-            camera.onSimulatorTick = nil
-        }
     }
 
-    /// Thin status bar at the bottom showing session state.
+    /// Bottom status bar — also shows DEMO tag in simulator mode.
     private var sessionBanner: some View {
-        HStack {
+        HStack(spacing: 8) {
             Circle()
                 .fill(session.isActive ? Color.green : Color.gray)
                 .frame(width: 10, height: 10)
@@ -85,6 +63,15 @@ struct ContentView: View {
             Text(session.isActive ? "Session active · \(session.sessionID.prefix(8))" : "Session ended")
                 .font(.caption)
                 .foregroundStyle(.white)
+
+            if camera.state == .simulatorDemo {
+                Text("DEMO")
+                    .font(.caption.bold())
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Color.orange)
+                    .clipShape(Capsule())
+            }
 
             Spacer()
 
@@ -94,7 +81,30 @@ struct ContentView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
-        .background(.black.opacity(0.6))
+        .background(.black.opacity(0.7))
+    }
+
+    // MARK: - Pipeline wiring
+
+    private func wirePipeline() {
+        // Real camera frames → Vision → session + backend
+        camera.onFrame = { [session, analyzer, logger] sampleBuffer in
+            let flags = analyzer.analyze(sampleBuffer: sampleBuffer, sessionID: session.sessionID)
+            for flag in flags {
+                session.recordFlag(flag)
+                logger.log(flag)
+            }
+        }
+
+        // Simulator demo: realistic sparse synthetic flags
+        camera.onSimulatorTick = { [session, logger] in
+            guard Int.random(in: 0..<10) < 3,
+                  let type = FlagType.allCases.randomElement()
+            else { return }
+            let flag = IntegrityFlag(sessionID: session.sessionID, type: type)
+            session.recordFlag(flag)
+            logger.log(flag)
+        }
     }
 }
 

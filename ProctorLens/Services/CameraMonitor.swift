@@ -1,63 +1,81 @@
 import AVFoundation
-import CoreImage
-import UIKit
+import Combine
+
+/// The states the camera can be in from the app's perspective.
+enum CameraState {
+    /// Haven't asked the OS yet.
+    case unknown
+    /// Permission request is in flight.
+    case requesting
+    /// Real front camera is running — monitoring is live.
+    case active
+    /// User denied permission. Quiz must be blocked.
+    case permissionDenied
+    /// Simulator build — no real hardware, synthetic ticks running.
+    case simulatorDemo
+}
 
 /// Captures front-camera frames at a fixed interval using AVFoundation.
-/// Delivers one CMSampleBuffer per tick to whoever sets `onFrame`.
-/// No video is stored — buffers are handed off and released after analysis.
+/// Publishes its `state` so the UI can gate quiz entry on real monitoring.
 ///
-/// **Simulator note**: iOS simulators have no camera hardware. When a real
-/// camera is unavailable, `CameraMonitor` falls back to a timer that calls
-/// `onSimulatorTick` instead, so the full pipeline (analyzer → logger →
-/// dashboard) can be exercised without a physical device.
-final class CameraMonitor: NSObject {
+/// Real device flow:
+///   unknown → requesting → active          (permission granted)
+///   unknown → requesting → permissionDenied (permission denied → block quiz)
+///
+/// Simulator flow:
+///   unknown → simulatorDemo                (skip AVFoundation entirely)
+final class CameraMonitor: NSObject, ObservableObject {
+
+    // MARK: - Published state
+
+    @Published private(set) var state: CameraState = .unknown
 
     // MARK: - Configuration
 
-    /// Seconds between sampled frames. Default matches PRD (one every 2 s).
+    /// Seconds between sampled frames. Matches PRD default (one every 2 s).
     var sampleInterval: TimeInterval = 2.0
 
     /// Called on a background queue with each real camera frame.
     var onFrame: ((CMSampleBuffer) -> Void)?
 
-    /// Called on the main queue each tick when running in simulator mode.
-    /// The caller should inject synthetic flags directly into the session.
+    /// Called on the main queue each tick in simulator demo mode.
     var onSimulatorTick: (() -> Void)?
 
-    // MARK: - Private state
+    // MARK: - Private
 
     private let captureSession = AVCaptureSession()
     private let output         = AVCaptureVideoDataOutput()
     private let queue          = DispatchQueue(label: "com.ashish.proctorLens.cameraQueue", qos: .userInitiated)
     private var lastSampleTime: CMTime = .invalid
-    private var isRunning      = false
     private var simulatorTimer: Timer?
 
     // MARK: - Public API
 
-    /// Starts camera monitoring.
-    /// - On a real device: requests permission and opens the front-camera session.
-    /// - In the simulator: skips AVFoundation entirely (the simulator's camera
-    ///   infrastructure is unreliable) and goes straight to synthetic tick mode.
-    func start() {
-        guard !isRunning else { return }
+    /// Checks / requests permission, then starts the appropriate path.
+    /// Safe to call multiple times — no-ops once past the `.unknown` state.
+    func requestAndStart() {
+        guard state == .unknown else { return }
 
         #if targetEnvironment(simulator)
-        startSimulatorFallback()
+        startSimulatorDemo()
         #else
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             configureAndStart()
         case .notDetermined:
+            DispatchQueue.main.async { self.state = .requesting }
             AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
-                if granted {
-                    self?.configureAndStart()
-                } else {
-                    self?.startSimulatorFallback()
+                DispatchQueue.main.async {
+                    if granted {
+                        self?.configureAndStart()
+                    } else {
+                        self?.state = .permissionDenied
+                    }
                 }
             }
         default:
-            startSimulatorFallback()
+            // .denied or .restricted
+            DispatchQueue.main.async { self.state = .permissionDenied }
         }
         #endif
     }
@@ -65,10 +83,8 @@ final class CameraMonitor: NSObject {
     func stop() {
         simulatorTimer?.invalidate()
         simulatorTimer = nil
-        guard isRunning else { return }
         queue.async { [weak self] in
             self?.captureSession.stopRunning()
-            self?.isRunning = false
         }
     }
 
@@ -80,10 +96,13 @@ final class CameraMonitor: NSObject {
             do {
                 try self.configure()
                 self.captureSession.startRunning()
-                self.isRunning = true
+                DispatchQueue.main.async { self.state = .active }
             } catch {
-                print("[CameraMonitor] Camera unavailable (\(error)) — using simulator mode.")
-                DispatchQueue.main.async { self.startSimulatorFallback() }
+                // Hardware unavailable even though permission was granted.
+                // This should not happen on a real device — treat as denied
+                // so the quiz is blocked rather than proceeding unmonitored.
+                print("[CameraMonitor] Setup error: \(error)")
+                DispatchQueue.main.async { self.state = .permissionDenied }
             }
         }
     }
@@ -92,7 +111,7 @@ final class CameraMonitor: NSObject {
         captureSession.beginConfiguration()
         defer { captureSession.commitConfiguration() }
 
-        captureSession.sessionPreset = .medium   // Enough for face detection; saves power.
+        captureSession.sessionPreset = .medium
 
         guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
             throw CameraError.noFrontCamera
@@ -101,31 +120,25 @@ final class CameraMonitor: NSObject {
         guard captureSession.canAddInput(input) else { throw CameraError.cannotAddInput }
         captureSession.addInput(input)
 
-        // Video output — we decode frames on `queue`
         output.setSampleBufferDelegate(self, queue: queue)
         output.alwaysDiscardsLateVideoFrames = true
         guard captureSession.canAddOutput(output) else { throw CameraError.cannotAddOutput }
         captureSession.addOutput(output)
 
-        // Portrait orientation for iPad
-        if let connection = output.connection(with: .video) {
-            if connection.isVideoRotationAngleSupported(90) {
-                connection.videoRotationAngle = 90
-            }
+        if let connection = output.connection(with: .video),
+           connection.isVideoRotationAngleSupported(90) {
+            connection.videoRotationAngle = 90
         }
     }
 
-    // MARK: - Simulator fallback
+    // MARK: - Simulator demo path
 
-    /// Fires `onSimulatorTick` at the same cadence as real frame sampling.
-    /// The caller injects whatever synthetic flags it wants to test with.
-    private func startSimulatorFallback() {
-        guard simulatorTimer == nil else { return }
-        print("[CameraMonitor] Running in simulator mode — no real camera frames.")
+    private func startSimulatorDemo() {
+        print("[CameraMonitor] Simulator — running in demo mode with synthetic flags.")
+        state = .simulatorDemo
         simulatorTimer = Timer.scheduledTimer(withTimeInterval: sampleInterval, repeats: true) { [weak self] _ in
             self?.onSimulatorTick?()
         }
-        isRunning = true
     }
 
     // MARK: - Errors
@@ -147,8 +160,6 @@ extension CameraMonitor: AVCaptureVideoDataOutputSampleBufferDelegate {
         from connection: AVCaptureConnection
     ) {
         let presentationTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-
-        // Throttle: only forward a frame once per `sampleInterval`.
         if lastSampleTime == .invalid ||
            CMTimeGetSeconds(CMTimeSubtract(presentationTime, lastSampleTime)) >= sampleInterval {
             lastSampleTime = presentationTime
