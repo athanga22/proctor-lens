@@ -142,17 +142,19 @@ struct DashboardView: View {
 
     private func iconName(for type: FlagType) -> String {
         switch type {
-        case .noFace:         return "person.slash"
-        case .multipleFaces:  return "person.2"
-        case .headTurnedAway: return "arrow.turn.up.left"
+        case .noFace:          return "person.slash"
+        case .multipleFaces:   return "person.2"
+        case .headTurnedAway:  return "arrow.turn.up.left"
+        case .appBackgrounded: return "rectangle.portrait.and.arrow.right"
         }
     }
 
     private func color(for type: FlagType) -> Color {
         switch type {
-        case .noFace:         return .red
-        case .multipleFaces:  return .orange
-        case .headTurnedAway: return .yellow
+        case .noFace:          return .red
+        case .multipleFaces:   return .orange
+        case .headTurnedAway:  return .yellow
+        case .appBackgrounded: return .purple
         }
     }
 }

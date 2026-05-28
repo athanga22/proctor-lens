@@ -26,7 +26,7 @@ from pydantic import BaseModel, Field
 
 DB_PATH = Path(__file__).parent / "proctor.db"
 
-FLAG_TYPES = Literal["no_face", "multiple_faces", "head_turned_away"]
+FLAG_TYPES = Literal["no_face", "multiple_faces", "head_turned_away", "app_backgrounded"]
 
 
 # ---------------------------------------------------------------------------

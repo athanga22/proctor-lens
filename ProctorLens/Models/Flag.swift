@@ -1,17 +1,25 @@
 import Foundation
 
-/// The three integrity events the app can detect.
+/// The integrity events the app can detect.
 enum FlagType: String, Codable, CaseIterable {
-    case noFace       = "no_face"
-    case multipleFaces = "multiple_faces"
-    case headTurnedAway = "head_turned_away"
+    case noFace          = "no_face"
+    case multipleFaces   = "multiple_faces"
+    case headTurnedAway  = "head_turned_away"
+    case appBackgrounded = "app_backgrounded"   // candidate left the exam app
 
     var displayName: String {
         switch self {
-        case .noFace:        return "No face detected"
-        case .multipleFaces: return "Multiple faces"
-        case .headTurnedAway: return "Head turned away"
+        case .noFace:          return "No face detected"
+        case .multipleFaces:   return "Multiple faces"
+        case .headTurnedAway:  return "Head turned away"
+        case .appBackgrounded: return "Left the exam app"
         }
+    }
+
+    /// The camera-based violations the IntegrityAnalyzer can produce.
+    /// appBackgrounded is excluded — it comes from the app lifecycle, not Vision.
+    static var cameraDetectable: [FlagType] {
+        [.noFace, .multipleFaces, .headTurnedAway]
     }
 }
 

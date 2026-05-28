@@ -10,6 +10,8 @@ struct ContentView: View {
     @StateObject private var session = SessionManager()
     @StateObject private var camera  = CameraMonitor()
 
+    @Environment(\.scenePhase) private var scenePhase
+
     private let analyzer  = IntegrityAnalyzer()
     private let coalescer = FlagCoalescer()
     private let logger    = FlagLogger()
@@ -38,6 +40,21 @@ struct ContentView: View {
             }
         }
         .animation(.easeInOut, value: screen)
+        .onChange(of: scenePhase) { oldPhase, newPhase in
+            handleScenePhaseChange(from: oldPhase, to: newPhase)
+        }
+    }
+
+    /// Detects the candidate leaving the exam app (home swipe, app switcher,
+    /// Control Center, notification). iOS can't *prevent* this without kiosk
+    /// mode, but a proctoring app must at least detect and flag every exit.
+    private func handleScenePhaseChange(from oldPhase: ScenePhase, to newPhase: ScenePhase) {
+        guard screen == .quiz, session.isActive else { return }
+        guard oldPhase == .active, newPhase != .active else { return }
+
+        let flag = IntegrityFlag(sessionID: session.sessionID, type: .appBackgrounded)
+        session.recordFlag(flag)
+        logger.log(flag)
     }
 
     // MARK: - Quiz shell
@@ -106,7 +123,7 @@ struct ContentView: View {
         // Simulator demo: realistic sparse synthetic flags (discrete, no coalescing).
         camera.onSimulatorTick = { [session, logger] in
             guard Int.random(in: 0..<10) < 3,
-                  let type = FlagType.allCases.randomElement()
+                  let type = FlagType.cameraDetectable.randomElement()
             else { return }
             let flag = IntegrityFlag(sessionID: session.sessionID, type: type)
             session.recordFlag(flag)
