@@ -1,95 +1,120 @@
 import Vision
 import CoreMedia
+import CoreML
 
 /// Runs the three integrity checks on a single camera frame.
-/// Checks are intentionally separated into small, readable functions.
 ///
 /// Checks:
-///   1. noFace         — zero faces detected
-///   2. multipleFaces  — more than one face detected
+///   1. noFace         — Vision ran and found zero faces
+///   2. multipleFaces  — Vision ran and found more than one face
 ///   3. headTurnedAway — yaw or pitch exceeds threshold
+///
+/// Uses `VNDetectFaceRectanglesRequest` (revision 3) rather than the landmarks
+/// request: we only need face count + head pose (yaw/pitch), not landmark points,
+/// and the lighter request is more likely to run on CPU in the simulator.
+///
+/// Important correctness rule: a Vision *failure* is NOT the same as "no face".
+/// If the request can't run, we emit no flags rather than fabricating a noFace.
 final class IntegrityAnalyzer {
 
     // MARK: - Configuration
 
-    /// Radians. ~20° feels right for "clearly looking away" without false positives.
-    /// Configurable so tests or callers can adjust without touching this file.
-    var yawThreshold:  Float = 0.35    // ~20°
-    var pitchThreshold: Float = 0.35   // ~20°
+    /// Radians. ~20° = "clearly looking away" without false positives.
+    var yawThreshold:   Float = 0.35
+    var pitchThreshold: Float = 0.35
+
+    /// CPU compute device, resolved once. Forcing CPU lets Vision run in the
+    /// simulator, which has no Neural Engine ("Could not create inference context").
+    private let cpuDevice: MLComputeDevice? = MLComputeDevice.allComputeDevices.first {
+        if case .cpu = $0 { return true }
+        return false
+    }
+
+    /// Set true after the first successful Vision run, so we only warn once
+    /// if analysis is unavailable (e.g. simulator without CPU support).
+    private var hasLoggedFailure = false
 
     // MARK: - Public API
 
-    /// Analyzes one frame synchronously on the caller's queue.
-    /// Returns zero or more flags. Never throws — errors are swallowed and logged.
+    /// Analyzes one frame synchronously. Returns flags only when Vision actually ran.
+    /// Returns an empty array on analysis failure — never a fabricated noFace.
     func analyze(sampleBuffer: CMSampleBuffer, sessionID: String) -> [IntegrityFlag] {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return []
         }
 
-        var detectedFlags: [IntegrityFlag] = []
-
-        // Use a semaphore so the Vision request (which is async internally)
-        // completes before we return. This keeps the caller's interface simple.
         let semaphore = DispatchSemaphore(value: 0)
         var observations: [VNFaceObservation] = []
+        var visionSucceeded = false
 
-        let request = VNDetectFaceLandmarksRequest { req, error in
+        let request = VNDetectFaceRectanglesRequest { req, error in
             defer { semaphore.signal() }
             if let error {
-                print("[IntegrityAnalyzer] Vision error: \(error)")
+                if !self.hasLoggedFailure {
+                    print("[IntegrityAnalyzer] Vision unavailable: \(error.localizedDescription)")
+                    self.hasLoggedFailure = true
+                }
                 return
             }
             observations = req.results as? [VNFaceObservation] ?? []
+            visionSucceeded = true
+        }
+
+        // Revision 3 provides yaw AND pitch (pitch requires rev 3, iOS 15+).
+        request.revision = VNDetectFaceRectanglesRequestRevision3
+
+        // Force CPU so the request runs without a Neural Engine (simulator).
+        if let cpuDevice {
+            request.setComputeDevice(cpuDevice, for: .main)
         }
 
         let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
         do {
             try handler.perform([request])
         } catch {
-            print("[IntegrityAnalyzer] Handler error: \(error)")
+            if !hasLoggedFailure {
+                print("[IntegrityAnalyzer] Handler error: \(error.localizedDescription)")
+                hasLoggedFailure = true
+            }
             semaphore.signal()
         }
         semaphore.wait()
 
-        // Check 1 & 2: face count
+        // If Vision couldn't run, emit nothing — do not fabricate a noFace flag.
+        guard visionSucceeded else { return [] }
+
+        var flags: [IntegrityFlag] = []
+
         if let countFlag = checkFaceCount(observations, sessionID: sessionID) {
-            detectedFlags.append(countFlag)
+            flags.append(countFlag)
         }
 
-        // Check 3: head pose (only meaningful if exactly one face was found)
+        // Head pose only meaningful with exactly one face.
         if observations.count == 1,
            let poseFlag = checkHeadPose(observations[0], sessionID: sessionID) {
-            detectedFlags.append(poseFlag)
+            flags.append(poseFlag)
         }
 
-        return detectedFlags
+        return flags
     }
 
     // MARK: - Individual checks
 
     private func checkFaceCount(_ observations: [VNFaceObservation], sessionID: String) -> IntegrityFlag? {
         switch observations.count {
-        case 0:
-            return IntegrityFlag(sessionID: sessionID, type: .noFace)
-        case 2...:
-            return IntegrityFlag(sessionID: sessionID, type: .multipleFaces)
-        default:
-            return nil
+        case 0:   return IntegrityFlag(sessionID: sessionID, type: .noFace)
+        case 2...: return IntegrityFlag(sessionID: sessionID, type: .multipleFaces)
+        default:  return nil
         }
     }
 
     private func checkHeadPose(_ face: VNFaceObservation, sessionID: String) -> IntegrityFlag? {
-        // VNFaceObservation exposes yaw and pitch as NSNumber? (nil if unavailable).
         guard let yaw   = face.yaw?.floatValue,
               let pitch = face.pitch?.floatValue else {
-            // Head pose not available on this device/OS — skip silently.
-            return nil
+            return nil   // pose unavailable — skip silently
         }
 
-        let yawExceeded   = abs(yaw)   > yawThreshold
-        let pitchExceeded = abs(pitch) > pitchThreshold
-
-        if yawExceeded || pitchExceeded {
+        if abs(yaw) > yawThreshold || abs(pitch) > pitchThreshold {
             return IntegrityFlag(sessionID: sessionID, type: .headTurnedAway)
         }
         return nil
