@@ -54,11 +54,25 @@ struct ContentView: View {
                 }
             }
 
+            // Simulator fallback: rotate through all three flag types so the
+            // full pipeline (analyzer → session → logger → dashboard) is testable
+            // without real camera hardware.
+            var simulatorFlagIndex = 0
+            let simulatorFlagTypes = FlagType.allCases
+            camera.onSimulatorTick = { [session, logger] in
+                let type = simulatorFlagTypes[simulatorFlagIndex % simulatorFlagTypes.count]
+                simulatorFlagIndex += 1
+                let flag = IntegrityFlag(sessionID: session.sessionID, type: type)
+                session.recordFlag(flag)
+                logger.log(flag)
+            }
+
             camera.start()
         }
         .onDisappear {
             camera.stop()
             camera.onFrame = nil
+            camera.onSimulatorTick = nil
         }
     }
 
