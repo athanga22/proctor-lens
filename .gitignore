@@ -28,3 +28,4 @@ backend/__pycache__/
 backend/*.pyc
 backend/.venv/
 backend/proctor.db
+backend/*.db.backup

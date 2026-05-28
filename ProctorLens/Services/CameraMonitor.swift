@@ -99,10 +99,10 @@ final class CameraMonitor: NSObject, ObservableObject {
             } catch {
                 print("[CameraMonitor] Setup error: \(error)")
                 #if targetEnvironment(simulator)
-                // Simulator with no RocketSim camera — synthetic demo is honest here.
+                // Simulator with no RocketSim camera: synthetic demo is honest here.
                 DispatchQueue.main.async { self.startSimulatorDemo() }
                 #else
-                // Real device with no camera after permission granted = unexpected.
+                // Real device with no camera after permission granted is unexpected.
                 // Block rather than proceed unmonitored.
                 DispatchQueue.main.async { self.state = .permissionDenied }
                 #endif
