@@ -1,20 +1,32 @@
 import SwiftUI
 
-/// Read-only reviewer dashboard — lists all flags from the session,
-/// grouped by type, sorted by time.
+/// Read-only reviewer dashboard.
+/// Shows in-memory flags immediately, then enriches from the backend in the background.
+/// Flags are grouped by type, sorted oldest-first within each group.
 struct DashboardView: View {
 
-    let flags: [IntegrityFlag]
+    // In-memory flags passed from the session — always available instantly.
+    let localFlags: [IntegrityFlag]
+    let sessionID: String
 
-    // Group flags by type, keep each group sorted oldest-first.
+    @State private var remoteFlags: [IntegrityFlag] = []
+    @State private var isFetching = false
+    @State private var fetchError: String? = nil
+
+    /// Merge local + remote, deduplicated by id, sorted by timestamp.
+    private var allFlags: [IntegrityFlag] {
+        var seen = Set<UUID>()
+        return (localFlags + remoteFlags)
+            .filter { seen.insert($0.id).inserted }
+            .sorted { $0.timestamp < $1.timestamp }
+    }
+
     private var grouped: [(FlagType, [IntegrityFlag])] {
         var dict: [FlagType: [IntegrityFlag]] = [:]
-        for flag in flags {
-            dict[flag.type, default: []].append(flag)
-        }
+        for flag in allFlags { dict[flag.type, default: []].append(flag) }
         return FlagType.allCases.compactMap { type in
             guard let group = dict[type], !group.isEmpty else { return nil }
-            return (type, group.sorted { $0.timestamp < $1.timestamp })
+            return (type, group)
         }
     }
 
@@ -24,10 +36,12 @@ struct DashboardView: View {
         return f
     }()
 
+    // MARK: - Body
+
     var body: some View {
         NavigationStack {
             Group {
-                if flags.isEmpty {
+                if allFlags.isEmpty && !isFetching {
                     emptyState
                 } else {
                     flagList
@@ -35,6 +49,16 @@ struct DashboardView: View {
             }
             .navigationTitle("Session Review")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    if isFetching {
+                        ProgressView()
+                    } else {
+                        Button("Refresh") { Task { await fetchRemote() } }
+                    }
+                }
+            }
+            .task { await fetchRemote() }
         }
     }
 
@@ -53,15 +77,21 @@ struct DashboardView: View {
 
     private var flagList: some View {
         List {
-            Section {
-                summaryRow(label: "Total flags", value: "\(flags.count)")
+            // Summary section
+            Section("Summary") {
+                summaryRow(label: "Session ID", value: String(sessionID.prefix(8)) + "…")
+                summaryRow(label: "Total flags", value: "\(allFlags.count)")
                 summaryRow(label: "Flag types",  value: "\(grouped.count)")
-            } header: {
-                Text("Summary")
+                if let err = fetchError {
+                    Label(err, systemImage: "wifi.slash")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                }
             }
 
+            // Per-type sections
             ForEach(grouped, id: \.0) { type, events in
-                Section {
+                Section("\(type.displayName)  (\(events.count))") {
                     ForEach(events) { flag in
                         HStack {
                             Text(Self.timeFormatter.string(from: flag.timestamp))
@@ -73,8 +103,6 @@ struct DashboardView: View {
                                 .foregroundStyle(color(for: type))
                         }
                     }
-                } header: {
-                    Text("\(type.displayName)  (\(events.count))")
                 }
             }
         }
@@ -86,6 +114,27 @@ struct DashboardView: View {
             Text(label).foregroundStyle(.secondary)
             Spacer()
             Text(value).bold()
+        }
+    }
+
+    // MARK: - Backend fetch
+
+    private func fetchRemote() async {
+        guard let url = URL(string: "\(FlagLogger.backendBaseURL)/sessions/\(sessionID)/flags") else { return }
+
+        isFetching = true
+        fetchError = nil
+        defer { isFetching = false }
+
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            // IntegrityFlag defines its own CodingKeys mapping snake_case → camelCase,
+            // so we don't use convertFromSnakeCase here.
+            remoteFlags = try decoder.decode([IntegrityFlag].self, from: data)
+        } catch {
+            fetchError = "Backend unavailable — showing local data."
         }
     }
 
@@ -109,9 +158,12 @@ struct DashboardView: View {
 }
 
 #Preview {
-    DashboardView(flags: [
-        IntegrityFlag(sessionID: "demo", type: .noFace),
-        IntegrityFlag(sessionID: "demo", type: .multipleFaces),
-        IntegrityFlag(sessionID: "demo", type: .headTurnedAway),
-    ])
+    DashboardView(
+        localFlags: [
+            IntegrityFlag(sessionID: "demo", type: .noFace),
+            IntegrityFlag(sessionID: "demo", type: .multipleFaces),
+            IntegrityFlag(sessionID: "demo", type: .headTurnedAway),
+        ],
+        sessionID: "demo"
+    )
 }

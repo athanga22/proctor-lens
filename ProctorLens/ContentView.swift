@@ -16,7 +16,7 @@ struct ContentView: View {
         ZStack(alignment: .topTrailing) {
 
             if showDashboard {
-                DashboardView(flags: session.flags)
+                DashboardView(localFlags: session.flags, sessionID: session.sessionID)
                     .transition(.move(edge: .trailing))
             } else {
                 quizShell
